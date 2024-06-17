@@ -1,13 +1,11 @@
-#include "Arduino.h"
-#include "ESPAsyncUDP.h"
+#include <Arduino.h>
+#include "AsyncUDP.h"
+#include <WiFi.h>
 
-extern "C" {
-#include "user_interface.h"
 #include "lwip/opt.h"
 #include "lwip/inet.h"
 #include "lwip/udp.h"
 #include "lwip/igmp.h"
-}
 
 AsyncUDPMessage::AsyncUDPMessage(size_t size)
 {
@@ -233,17 +231,7 @@ bool AsyncUDP::listenMulticast(ip_addr_t *addr, uint16_t port, uint8_t ttl)
         return false;
     }
     ip_addr_t multicast_if_addr;
-    struct ip_info ifIpInfo;
-    int mode = wifi_get_opmode();
-    if(mode & STATION_MODE) {
-        wifi_get_ip_info(STATION_IF, &ifIpInfo);
-        multicast_if_addr.addr = ifIpInfo.ip.addr;
-    } else if (mode & SOFTAP_MODE) {
-        wifi_get_ip_info(SOFTAP_IF, &ifIpInfo);
-        multicast_if_addr.addr = ifIpInfo.ip.addr;
-    } else {
-        return false;
-    }
+    multicast_if_addr.addr = WiFi.localIP();
     if (igmp_joingroup(&multicast_if_addr, addr)!= ERR_OK) {
         return false;
     }

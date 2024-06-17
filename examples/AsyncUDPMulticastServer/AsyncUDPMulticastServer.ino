@@ -1,8 +1,13 @@
-#include <ESP8266WiFi.h>
-#include "ESPAsyncUDP.h"
+#include <WiFi.h>
+#include <AsyncUDP.h>
 
-const char * ssid = "***********";
-const char * password = "***********";
+#ifndef STASSID
+#define STASSID "your-ssid"
+#define STAPSK "your-password"
+#endif
+
+const char* ssid = STASSID;
+const char* password = STAPSK;
 
 AsyncUDP udp;
 
